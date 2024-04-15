@@ -5,6 +5,7 @@ import axios from 'axios';
 const FileUploadComponent = () => {
   const [selectedFile, setSelectedFile] = useState(null);
   const [uploadMessage, setUploadMessage] = useState('');
+  const ENDPOINT_URL = 'https://chat-with-pdf-gq9x.onrender.com'
 
   const handleFileChange = (event) => {
     setSelectedFile(event.target.files[0]);
@@ -24,7 +25,8 @@ const FileUploadComponent = () => {
     const formData = new FormData();
     formData.append('file', selectedFile);
     try {
-        const response = await fetch('https://chat-with-pdf-gq9x.onrender.com/upload', {
+        let url = ENDPOINT_URL + '/upload'
+        const response = await fetch(url, {
             method: 'POST',
             body: formData,
         });

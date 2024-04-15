@@ -4,12 +4,14 @@ import React, { useState, useEffect} from 'react';
 const ChatComponent = () => {
   const defaultMessage = "Hi! Ask me any questions about a PDF document! The default PDF is 'Startup Playbook' by Sam Altman."
   const [messages, setMessages] = useState([{text:defaultMessage, sender:'bot'}]);
+  const ENDPOINT_URL = 'https://chat-with-pdf-gq9x.onrender.com'
 
   useEffect(() => {
     // re-initialize the vectorstore
     const refreshVectorDB = async () => {
         try {
-            const res = await fetch('https://chat-with-pdf-gq9x.onrender.com/refresh', {
+            let url = ENDPOINT_URL + '/refresh'
+            const res = await fetch(url, {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json'
@@ -28,7 +30,8 @@ const ChatComponent = () => {
     // Send user message to backend
     let userMessage = { text: messageText, sender: 'user' };
     setMessages(prevItems => [...prevItems, userMessage]);
-    const response = await fetch('https://chat-with-pdf-gq9x.onrender.com/predict', {
+    let url = ENDPOINT_URL + '/predict'
+    const response = await fetch(url, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
