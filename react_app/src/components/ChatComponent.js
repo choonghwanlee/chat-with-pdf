@@ -4,6 +4,7 @@ import React, { useState, useEffect} from 'react';
 const ChatComponent = () => {
   const defaultMessage = "Hi! Ask me any questions about a PDF document! The default PDF is 'Startup Playbook' by Sam Altman."
   const [messages, setMessages] = useState([{text:defaultMessage, sender:'bot'}]);
+  const [message, setMessage] = useState('');
   const ENDPOINT_URL = 'https://chat-with-pdf-gq9x.onrender.com'
 
   useEffect(() => {
@@ -28,6 +29,7 @@ const ChatComponent = () => {
   const sendMessage = async (messageText) => {
     // Add user message to local state
     // Send user message to backend
+    setMessage('');
     let userMessage = { text: messageText, sender: 'user' };
     setMessages(prevItems => [...prevItems, userMessage]);
     let url = ENDPOINT_URL + '/predict'
@@ -60,6 +62,8 @@ const ChatComponent = () => {
         <input
           type="text"
           placeholder="Type a message..."
+          value={message}
+          onChange={e => setMessage(e.target.value)} 
           onKeyDown={(e) => {
             if (e.key === 'Enter') {
               sendMessage(e.target.value);
@@ -68,7 +72,7 @@ const ChatComponent = () => {
           }}
           style={styles.inputBox}
         />
-        <button onClick={() => sendMessage(e.target.value)} style={styles.sendButton}>
+        <button onClick={() => {sendMessage(message) }} style={styles.sendButton}>
             Send
         </button>
       </div>
