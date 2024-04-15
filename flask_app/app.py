@@ -9,7 +9,7 @@ from langchain_core.runnables import RunnablePassthrough
 from langchain_core.output_parsers import StrOutputParser
 
 from flask import Flask, jsonify, request
-from flask_cors import CORS
+from flask_cors import CORS, cross_origin
 from werkzeug.utils import secure_filename
 
 from ingest import ingest_file
@@ -61,6 +61,11 @@ def upload_file():
     success = ingest_file(filepath)
     os.unlink(filepath)
     return jsonify({'message': 'File uploaded successfully'}), 200
+
+@app.route('/')
+@cross_origin()
+def hello_world():
+    return 'Hello, World!'
 
 if __name__ == '__main__':
   app.run(debug=True)
