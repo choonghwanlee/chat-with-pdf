@@ -6,6 +6,7 @@ const ChatComponent = () => {
   const [messages, setMessages] = useState([{text:defaultMessage, sender:'bot'}]);
 
   useEffect(() => {
+    // re-initialize the vectorstore
     const refreshVectorDB = async () => {
         try {
             const res = await fetch('https://chat-with-pdf-gq9x.onrender.com/refresh', {
@@ -43,7 +44,7 @@ const ChatComponent = () => {
 
   return (
     <div style={{marginTop:'10px',marginLeft:'20px', marginRight:'20px'}}>
-      <div className="chat-window" style={styles.chatWindow}>
+      <div style={styles.chatWindow}>
         {messages.map((msg, index) => (
             <div key={index} style={msg.sender === 'user' ? styles.userMessageContainer : styles.botMessageContainer}>
                 <div style={msg.sender === 'user' ? styles.userMessage : styles.botMessage}>
@@ -52,7 +53,7 @@ const ChatComponent = () => {
             </div>
       ))}
       </div>
-      <div className="input-container" style={styles.inputContainer}>
+      <div style={styles.inputContainer}>
         <input
           type="text"
           placeholder="Type a message..."
