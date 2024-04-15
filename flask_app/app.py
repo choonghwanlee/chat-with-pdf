@@ -34,6 +34,8 @@ if OPENAI_API_KEY is None:
 def format_docs(docs):
     return "\n\n".join(doc.page_content for doc in docs)
 
+ingest_file()
+
 @app.route('/predict', methods=['POST'])
 def predict():
     ## only if request.files exist:
