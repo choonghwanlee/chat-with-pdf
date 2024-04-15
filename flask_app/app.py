@@ -34,7 +34,6 @@ if OPENAI_API_KEY is None:
 def format_docs(docs):
     return "\n\n".join(doc.page_content for doc in docs)
 
-ingest_file()
 
 @app.route('/predict', methods=['POST'])
 def predict():
@@ -63,6 +62,15 @@ def upload_file():
     success = ingest_file(filepath)
     os.unlink(filepath)
     return jsonify({'message': 'File uploaded successfully'}), 200
+
+@app.route('/refresh', methods=['POST'])
+def refresh():
+    success = ingest_file()
+    if success:
+        return jsonify({'message': 'vector DB initialized'}), 200
+    else:
+        return jsonify({'message': 'vector DB init failed'}), 400
+
 
 @app.route('/')
 @cross_origin()

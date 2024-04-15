@@ -1,9 +1,26 @@
 "use client"
-import React, { useState } from 'react';
+import React, { useState, useEffect} from 'react';
 
 const ChatComponent = () => {
   const defaultMessage = "Hi! Ask me any questions about a PDF document! The default PDF is 'Startup Playbook' by Sam Altman."
   const [messages, setMessages] = useState([{text:defaultMessage, sender:'bot'}]);
+
+  useEffect(() => {
+    const refreshVectorDB = async () => {
+        try {
+            const res = await fetch('https://chat-with-pdf-gq9x.onrender.com/refresh', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+            });
+        } catch (error) {
+            console.error('Error sending POST request:', error);
+        }
+    };
+    // Call the function when component mounts (page loads/refreshes)
+    refreshVectorDB();
+  }, []);
 
   const sendMessage = async (messageText) => {
     // Add user message to local state
