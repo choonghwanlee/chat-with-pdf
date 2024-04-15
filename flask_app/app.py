@@ -16,7 +16,7 @@ from ingest import ingest_file
 load_dotenv()
 
 app = Flask(__name__)
-CORS(app)
+cors = CORS(app)
 
 template = """You are an assistant for question-answering tasks. Use the following pieces of retrieved context to answer the question.
 Say that you don't know when asked a question you don't know, do not make up an answer. Be precise and concise in your answer.
@@ -38,9 +38,9 @@ def format_docs(docs):
 def predict():
     ## only if request.files exist:
     llm = ChatOpenAI(model="gpt-3.5-turbo-0125")
-    question = request.form['question']
+    question = request.json['question']
     embeddings = OpenAIEmbeddings()
-    vectorstore = FAISS.load_local("my_pdf", embeddings)
+    vectorstore = FAISS.load_local("my_pdf", embeddings, allow_dangerous_deserialization=True)
     retriever = vectorstore.as_retriever(search_type="similarity", search_kwargs={"k": 3})
     custom_rag_prompt = PromptTemplate.from_template(template)
     rag_chain = (
@@ -50,7 +50,7 @@ def predict():
         | StrOutputParser()
     )
     result = rag_chain.invoke(question)
-    return jsonify({'result': result})
+    return jsonify({'message': result})
 
 @app.route('/upload', methods=['POST'])
 def upload_file():
@@ -58,9 +58,9 @@ def upload_file():
     filename = secure_filename(file.filename)
     filepath = os.path.join('./', filename)
     file.save(filepath)
-    success = ingest_file(file)
+    success = ingest_file(filepath)
     os.unlink(filepath)
-    return "Uploaded successfully", 200
+    return jsonify({'message': 'File uploaded successfully'}), 200
 
 if __name__ == '__main__':
   app.run(debug=True)
